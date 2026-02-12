@@ -19,5 +19,9 @@ function createSingleItem(item) {
       <i class="fa-regular fa-trash-can"></i>
 </button>`;
 
+  $div.find(".edit-btn").on("click", function () {
+    setEditId(item.id);
+  });
+
   return $div;
 }
