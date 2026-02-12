@@ -1,120 +1,3 @@
-var items = groceryItems;
-
-// Render App
-function render() {
-  var $app = $("#app");
-  $app.empty();
-
-  var $itemsElement = createItems(items);
-  $app.append($itemsElement);
-}
-
-// Initialize App
-$(document).ready(function () {
-  render();
-});
-// ....
-
-// Edit Completed Function
-function editCompleted(itemId) {
-  items = $.map(items, function (item) {
-    if (item.id === itemId) {
-      return $.extend({}, item, { completed: !item.completed });
-    }
-    return item;
-  });
-  render();
-}
-
-// ....
-
-// Render App
-function render() {
-  var $app = $("#app");
-  $app.empty();
-
-  var $formElement = createForm();
-  var $itemsElement = createItems(items);
-
-  $app.append($formElement);
-  $app.append($itemsElement);
-}
-
-// Generate unique ID
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-// Add Item Function
-function addItem(itemName) {
-  var newItem = {
-    name: itemName,
-    completed: false,
-    id: generateId(),
-  };
-  items.push(newItem);
-  render();
-  setTimeout(function () {
-    alert("Item Added Successfully!");
-  }, 0);
-}
-
-// ....
-
-var editId = null;
-
-// Render App
-function render() {
-  var $app = $("#app");
-  $app.empty();
-
-  var itemToEdit = editId
-    ? $.grep(items, function (item) {
-        return item.id === editId;
-      })[0]
-    : null;
-  var $formElement = createForm(editId, itemToEdit); // edited line
-  var $itemsElement = createItems(items);
-
-  $app.append($formElement);
-  $app.append($itemsElement);
-}
-
-// Initialize App
-$(document).ready(function () {
-  render();
-});
-
-// Update Item Name Function
-function updateItemName(newName) {
-  items = $.map(items, function (item) {
-    if (item.id === editId) {
-      return $.extend({}, item, { name: newName });
-    }
-    return item;
-  });
-  editId = null;
-  render();
-  setTimeout(function () {
-    alert("Item Updated Successfully!");
-  }, 0);
-}
-
-// Set Edit ID Function
-function setEditId(itemId) {
-  editId = itemId;
-  render();
-
-  // Focus input after render
-  setTimeout(function () {
-    $(".form-input").focus();
-  }, 0);
-}
-
-// Remove this line:
-// var items = groceryItems;
-
-// Local Storage Functions
 function getLocalStorage() {
   var list = localStorage.getItem("grocery-list");
   if (list) {
@@ -127,40 +10,90 @@ function setLocalStorage(itemsArray) {
   localStorage.setItem("grocery-list", JSON.stringify(itemsArray));
 }
 
-// Initialize items from local storage
 var items = getLocalStorage();
 var editId = null;
 
-// ....
+function render() {
+  var $app = $("#app");
+  $app.empty();
 
-// Add Item Function
+  var itemToEdit = editId
+    ? $.grep(items, function (item) {
+        return item.id === editId;
+      })[0]
+    : null;
+
+  var $formElement = createForm(editId, itemToEdit);
+  var $itemsElement = createItems(items);
+
+  $app.append($formElement);
+  $app.append($itemsElement);
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
 function addItem(itemName) {
-  // ....
+  var newItem = {
+    name: itemName,
+    completed: false,
+    id: generateId(),
+  };
+  items.push(newItem);
   setLocalStorage(items);
   render();
+  setTimeout(function () {
+    alert("Item Added Successfully!");
+  }, 0);
 }
 
-// Edit Completed Function
-function editCompleted(itemId) {
-  // ....
-  setLocalStorage(items);
-  render();
-}
-
-// Remove Item Function
 function removeItem(itemId) {
   items = $.grep(items, function (item) {
     return item.id !== itemId;
   });
   setLocalStorage(items);
   render();
+  setTimeout(function () {
+    alert("Item Deleted Successfully!");
+  }, 0);
 }
 
-// Update Item Name Function
-function updateItemName(newName) {
-  // ....
+function editCompleted(itemId) {
+  items = $.map(items, function (item) {
+    if (item.id === itemId) {
+      return $.extend({}, item, { completed: !item.completed });
+    }
+    return item;
+  });
   setLocalStorage(items);
   render();
 }
 
-// ....
+function updateItemName(newName) {
+  items = $.map(items, function (item) {
+    if (item.id === editId) {
+      return $.extend({}, item, { name: newName });
+    }
+    return item;
+  });
+  editId = null;
+  setLocalStorage(items);
+  render();
+  setTimeout(function () {
+    alert("Item Updated Successfully!");
+  }, 0);
+}
+
+function setEditId(itemId) {
+  editId = itemId;
+  render();
+
+  setTimeout(function () {
+    $(".form-input").focus();
+  }, 0);
+}
+
+$(document).ready(function () {
+  render();
+});
