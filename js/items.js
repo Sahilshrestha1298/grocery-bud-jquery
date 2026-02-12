@@ -1,30 +1,11 @@
-function createSingleItem(item) {
-  var $div = $('<div class="single-item"></div>');
+// Create Items Container
+function createItems(itemsArray) {
+  var $container = $('<div class="items"></div>');
 
-  $div.html(`
-    <input type="checkbox" ${item.completed ? "checked" : ""} />
-    <p style="text-decoration: ${item.completed ? "line-through" : "none"}">
-      ${item.name}
-    </p>
-    <button class="btn icon-btn edit-btn" type="button">
-      <i class="fa-regular fa-pen-to-square"></i>
-    </button>
-    <button class="btn icon-btn remove-btn" type="button">
-      <i class="fa-regular fa-trash-can"></i>
-    </button>
-  `);
-
-  $div.find(".remove-btn").on("click", function () {
-    removeItem(item.id);
+  $.each(itemsArray, function (index, item) {
+    var $itemElement = createSingleItem(item);
+    $container.append($itemElement);
   });
 
-  $div.find(".edit-btn").on("click", function () {
-    setEditId(item.id);
-  });
-
-  $div.find("input[type='checkbox']").on("change", function () {
-    editCompleted(item.id);
-  });
-
-  return $div;
+  return $container;
 }
